@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h2>Sign Up our BookClub!</h2>
+<p>Enter you username and password:</p>
+
+{% if error%}
+<div class="alert alert-warning" role="alert"> {{ error }} </div>
+{% endif %}
+<form method="POST" action="{% url 'accounts:signup' %}">
+  {% csrf_token %}
+
+<div class="form-group">
+  <label for="usr">Name:</label>
+  <input type="text" class="form-control" id="usr" name="username">
+</div>
+<div class="form-group">
+  <label for="pwd">Password:</label>
+  <input type="password" class="form-control" id="pwd" name="password1">
+</div>
+
+<div class="form-group">
+    <label for="pwd2">Confirm password:</label>
+    <input type="password" class="form-control" id="pwd2" name="password2">
+</div>
+  <input class="btn btn-primary" type="submit" value="Sign Up">
+
+
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+</style>
+
+<h1>Already read books</h1>
+<br/>
+{% for book in books %}
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+          <h1><a href="{% url 'books:book_info' book.id %}">{{ book.book_name }}</a></h1>
+        </div>
+        <div class="panel-body">
+          <p><strong>Book author:</strong> {{ book.book_author}}</p>
+          <p><span style="font-size:20px;" class="glyphicon glyphicon-time" aria-hidden="true"></span><strong> I read it in: </strong> {{ book.read_at_pretty }}</p>
+          {% if book.book_comment %}
+          <p><strong>Slogan of the book:</strong> {{ book.book_comment }}</p>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endfor %}
+{% if books.has_other_pages %}
+  <ul class="pagination">
+    {% if books.has_previous %}
+      <li><a href="?page={{ books.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+
+    {% for i in books.paginator.page_range %}
+      {% if books.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if books.has_next %}
+      <li><a href="?page={{ books.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock %}

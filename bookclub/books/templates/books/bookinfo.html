@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+
+</style>
+
+<h1>Book info</h1>
+<br/>
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+          <h1>{{ book.book_name }}</h1>
+        </div>
+        <div class="panel-body">
+          <p><strong>Book author:</strong> {{ book.book_author}}</p>
+          <p><span  style="font-size:20px;" class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span><strong> We recommended book:</strong> {{ book.recommend_total}} times</p>
+          <p><strong>Published</strong> {{ book.pub_date_pretty }} by {{ book.user_name}}</p>
+          {% if book.book_comment %}
+            <p><strong>Slogan of the book:</strong> <br/> {{ book.book_comment }}</p>
+          {% endif %}
+
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    {{ success }}
+                </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="alert alert-warning" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+
+        </div>
+
+        {%  if alreadyreadstatus and not recommended %}
+        <div class="panel-footer">
+          <h3>Can you recommend this Book?</h3>
+          <button type="button"  class="btn btn-success btn-lg" href="#" onClick = "document.getElementById('recommend{{ book.id }}').submit()">
+            <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Yes, I recommend!
+          </button>
+
+          <form id="recommend{{ book.id }}"  method="POST" action="{%url 'books:recommend' book.id %}">
+            {% csrf_token %}
+            <input type="hidden">
+          </form>
+            <br/>
+
+        </div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+
+            {%  if   not alreadyreadstatus  and  not wantreadstatus  or not alreadyreadstatus and wantreadstatus %}
+            <div class="panel-footer">
+              <h3>Did you read this Book? You can add it to "Already Read Books"</h3>
+              <button type="button"  class="btn btn-success btn-lg" data-toggle="collapse" data-target="#demo">
+                <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> Add to "Already read"
+              </button>
+
+              <div id="demo" class="collapse">
+                  <form method="POST" action="{%url 'books:addAlreadyReadBook' book.id %}">
+                    {% csrf_token %}
+                    <label for="tr">When did you read?</label>
+                    <input type="month" class="form-control" id="tr" name="datealreadyread"
+                           value="{{datealreadyread}}">
+                    <br/>
+                    {% if not book.book_comment %}
+                    <label for="sl">Write your slogan or comment</label>
+                    <input type="text" class="form-control" id="sl" name="comment"
+                           value="{{comment}}">
+                    {% endif %}
+                    <button type="submit" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-time" aria-hidden="true">
+                    </span> I already read this book!</button>
+                  </form>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if not alreadyreadstatus and not wantreadstatus %}
+            <div class="panel-footer">
+              <h3>Do you want to read this Book? You can add it to "Want to read" list</h3>
+              <button type="button"  class="btn btn-success btn-lg" data-toggle="collapse" data-target="#demo2">
+                <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> Add to "Want to read"
+              </button>
+
+              <div id="demo2" class="collapse">
+                  <form method="POST" action="{%url 'books:add_want_to_read' book.id %}">
+                    {% csrf_token %}
+                <label for="tr2">Put the priority number (1-5)</label>
+                <input type="number"  min="1" max="5" class="form-control" id="tr2" name="priority" value="{{priority}}">
+                  <button type="submit" class="btn btn-success btn-lg">
+                      <span class="glyphicon glyphicon-ok-sign" aria-hidden="true">
+                  </span> I want to read this book</button>
+                  </form>
+              </div>
+            </div>
+              {% endif %}
+
+
+          {% endif %}
+
+
+        </div>
+
+
+        </div>
+
+      </div>
+    </div>
+
+
+<h3>Comments:</h3>
+    <div id="disqus_thread"></div>
+    <script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://bookclub-2.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+</div>
+
+
+{% endblock %}
